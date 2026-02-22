@@ -11,6 +11,7 @@
 </template>
 
 <script>
+import '@/utils/vant-ui'
 export default {
   name: 'LoginLayout',
   data () {

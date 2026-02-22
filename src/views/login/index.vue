@@ -13,30 +13,103 @@
 
       <div class="form">
         <div class="form-item">
-          <input class="inp" maxlength="11" placeholder="请输入手机号码" type="text">
+          <input v-model="mobile" class="inp" maxlength="11" placeholder="请输入手机号码" type="text">
         </div>
         <div class="form-item">
-          <input class="inp" maxlength="5" placeholder="请输入图形验证码" type="text">
-          <img src="@/assets/code.png" alt="">
+          <input v-model="picCode" class="inp" maxlength="5" placeholder="请输入图形验证码" type="text">
+          <img v-if="picUrl" :src="picUrl" @click="getPicCode" alt="">
         </div>
         <div class="form-item">
-          <input class="inp" placeholder="请输入短信验证码" type="text">
-          <button>获取验证码</button>
+          <input v-model="msgCode" class="inp" placeholder="请输入短信验证码" type="text">
+          <button @click="getCode">{{ second === totalSecond ? "获取验证码" : second + "秒后重新获取" }}</button>
         </div>
       </div>
 
-      <div class="login-btn">登录</div>
+      <div @click="login" class="login-btn">登录</div>
     </div>
   </div>
 </template>
 
 <script>
-import request from '@/utils/request'
+import { getMsgCode, getPicCode, codeLogin } from '@/api/login'
 export default {
   name: 'LoginPage',
   async created () {
-    const res = await request.get('/captcha/image')
-    console.log(res)
+    this.getPicCode()
+  },
+  data () {
+    return {
+      picCode: '',
+      picKey: '',
+      picUrl: '',
+      mobile: '',
+      msgCode: '',
+      totalSecond: 60,
+      second: 60,
+      setTime: null
+    }
+  },
+
+  methods: {
+    // 获取图形验证码
+    async getPicCode () {
+      const { data: { base64, key } } = await getPicCode()
+      this.picUrl = base64
+      this.picKey = key
+    },
+
+    // 获取短信验证码
+    async getCode (e) {
+      if (!this.validFn()) {
+        return
+      }
+      if (this.second === this.totalSecond && !this.setTime) {
+        e.target.style.color = '#000'
+        const ret = await getMsgCode(this.picCode, this.pickey, this.mobile)
+        console.log(ret)
+        this.$toast('验证码发送成功')
+        this.setTime = setInterval(() => {
+          this.second--
+          if (!this.second) {
+            this.second = this.totalSecond
+            e.target.style.color = '#cea26a'
+            clearInterval(this.setTime)
+          }
+        }, 1000)
+      }
+    },
+
+    // 校验输入框内容
+    validFn () {
+      if (!/^1[3-9]\d{9}$/.test(this.mobile)) {
+        this.$toast('请输入正确的手机号')
+        return false
+      }
+      if (!/^\w{4}$/.test(this.picCode)) {
+        this.$toast('请输入正确的图形验证码')
+        return false
+      }
+      return true
+    },
+
+    // 登录
+    async login () {
+      if (!this.validFn()) {
+        return
+      }
+      if (!/^\d{6}$/.test(this.msgCode)) {
+        this.$toast('请输入正确的手机验证码')
+        return
+      }
+      const res = await codeLogin(this.mobile, this.msgCode)
+      console.log(res)
+      this.$router.push('/')
+      this.$toast('登录成功')
+    }
+  },
+
+  destroyed () {
+    clearInterval(this.setTime)
   }
 }
 </script>
