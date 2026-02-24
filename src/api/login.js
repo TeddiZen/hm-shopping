@@ -21,5 +21,10 @@ export const codeLogin = (mobile, smsCode) => {
       isParty: false,
       partyData: {}
     }
+  },
+  {
+    headers: {
+      platform: 'h5'
+    }
   })
 }
