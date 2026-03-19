@@ -1,5 +1,5 @@
 <template>
-  <div :v-if="listInfo" class="goods-item" @click="$router.push('/prodetail')">
+  <div :v-if="listInfo" class="goods-item" @click="$router.push(`/prodetail/${listInfo.goods_id}`)">
     <div class="left">
       <img :src="listInfo.goods_image" alt="" />
     </div>

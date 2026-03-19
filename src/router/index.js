@@ -1,18 +1,20 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
+
 import Layout from '@/views/layout'
-import Login from '@/views/login'
-import MyOrder from '@/views/myorder'
-import Pay from '@/views/pay'
-import ProDetail from '@/views/prodetail'
-import SerchIndex from '@/views/search/index.vue'
-import SerchList from '@/views/search/list.vue'
 import Cart from '@/views/layout/cart.vue'
 import Catgory from '@/views/layout/catgory.vue'
 import Home from '@/views/layout/home.vue'
 import User from '@/views/layout/user.vue'
 
 import store from '@/store'
+
+const Login = () => import('@/views/login')
+const MyOrder = () => import('@/views/myorder')
+const Pay = () => import('@/views/pay')
+const ProDetail = () => import('@/views/prodetail')
+const SearchIndex = () => import('@/views/search/index.vue')
+const SearchList = () => import('@/views/search/list.vue')
 
 Vue.use(VueRouter)
 
@@ -32,8 +34,8 @@ const routes = [
   { path: '/myorder', component: MyOrder },
   { path: '/pay', component: Pay },
   { path: '/prodetail/:id', component: ProDetail },
-  { path: '/serchindex', component: SerchIndex },
-  { path: '/serchlist', component: SerchList }
+  { path: '/search', component: SearchIndex },
+  { path: '/searchlist', component: SearchList }
 ]
 
 const router = new VueRouter({

@@ -72,6 +72,9 @@ export default {
 </script>
 
 <style lang="less" scoped>
+* {
+  overflow: hidden;
+}
 // 主题 padding
 .home {
   padding-top: 100px;
