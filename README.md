@@ -1,4 +1,4 @@
-# hm-shopping
+# 基于Vue2的黑马商城简化版练习项目
 
 ## Project setup
 ```
